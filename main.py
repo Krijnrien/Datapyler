@@ -132,6 +132,10 @@ def add_dataset_command():
     open_csv_file_dialog()
 
 
+def do_nothing():
+    print("nothing happening")
+
+
 # endregion
 
 
@@ -146,43 +150,46 @@ def open_csv_file_dialog():
 
 
 def popup_select_columns():
-    frame = tk.Toplevel(width=300)
-    frame.grid()
-    canvas = tk.Canvas(frame, scrollregion=(0, 0, 900, 900))
-    vbar = tk.Scrollbar(frame, orient=tk.VERTICAL)
-    vbar.pack(side=tk.RIGHT, fill=tk.Y)
-    vbar.config(command=canvas.yview)
-    canvas.config(yscrollcommand=vbar.set)
-
-    select_options_label = tk.Label(canvas, text="Select columns to normalize values.")
-    select_options_label.pack()
-
-    def all_states():
-        create_notebook_tabs(list(state()))
-        canvas.destroy()
-
-    def state():
-        return map((lambda var: var.get()), vars)
-
-    tk.Button(canvas, text='Ok', command=all_states).pack(side=tk.TOP)
-
     column_names = db.select_all_column_names(table_name)
+    listNodes.insert(tk.END, *column_names)
 
-    # check_buttons_state_list = CheckBar(canvas, column_names)
-    # check_buttons_state_list.pack(side=tk.TOP, fill=tk.X)
-    # check_buttons_state_list.config(relief=tk.GROOVE, bd=2)
-
-    vars = []
-    #for pick in column_names:
-        #var = tk.StringVar()
-        #tk.Button(canvas, text='Ok', command=all_states).pack(side=tk.TOP)
-        #tk.Checkbutton(canvas, text=pick, onvalue=pick, offvalue="NULL").pack()
-        #chk.setvar(pick)
-        #chk.deselect()
-        #chk.pack(anchor=tk.W)
-        #vars.append(var)
-
-    canvas.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+    # frame = tk.Toplevel(width=300)
+    # frame.grid()
+    # canvas = tk.Canvas(frame, scrollregion=(0, 0, 900, 900))
+    # vbar = tk.Scrollbar(frame, orient=tk.VERTICAL)
+    # vbar.pack(side=tk.RIGHT, fill=tk.Y)
+    # vbar.config(command=canvas.yview)
+    # canvas.config(yscrollcommand=vbar.set)
+    #
+    # select_options_label = tk.Label(canvas, text="Select columns to normalize values.")
+    # select_options_label.pack()
+    #
+    # def all_states():
+    #     create_notebook_tabs(list(state()))
+    #     canvas.destroy()
+    #
+    # def state():
+    #     return map((lambda var: var.get()), vars)
+    #
+    # tk.Button(canvas, text='Ok', command=all_states).pack(side=tk.TOP)
+    #
+    # column_names = db.select_all_column_names(table_name)
+    #
+    # # check_buttons_state_list = CheckBar(canvas, column_names)
+    # # check_buttons_state_list.pack(side=tk.TOP, fill=tk.X)
+    # # check_buttons_state_list.config(relief=tk.GROOVE, bd=2)
+    #
+    # vars = []
+    # # for pick in column_names:
+    # # var = tk.StringVar()
+    # # tk.Button(canvas, text='Ok', command=all_states).pack(side=tk.TOP)
+    # # tk.Checkbutton(canvas, text=pick, onvalue=pick, offvalue="NULL").pack()
+    # # chk.setvar(pick)
+    # # chk.deselect()
+    # # chk.pack(anchor=tk.W)
+    # # vars.append(var)
+    #
+    # canvas.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
 
 def create_notebook_tabs(check_buttons_state_list):
@@ -209,10 +216,6 @@ def create_notebook_tabs(check_buttons_state_list):
             column_tabs_notebook.pack(expand=1, fill="both")
 
 
-def do_nothing():
-    print("nothing happening")
-
-
 # region GUI
 # ** Root frame **
 root_frame = tk.Tk(screenName="Datapyler", baseName="Datapyler")
@@ -233,6 +236,13 @@ view_menu_option = tk.Menu(menu_bar)
 menu_bar.add_cascade(label="View", menu=view_menu_option)
 view_menu_option.add_command(label="Log", command=do_nothing)
 view_menu_option.add_command(label="All Queries", command=do_nothing)
+
+listNodes = tk.Listbox(root_frame, width=20, height=20)
+listNodes.pack(side="left", fill="y")
+
+scrollbar = tk.Scrollbar(root_frame, orient="vertical")
+scrollbar.config(command=listNodes.yview)
+scrollbar.pack(side="right", fill="y")
 
 # ** Notebook tabs **
 column_tabs_notebook = ttk.Notebook(root_frame)
